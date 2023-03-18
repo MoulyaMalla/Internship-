@@ -1,10 +1,7 @@
 <?php 
 session_start();
-
 include('./include/config.php');
 error_reporting(E_ALL);
-
-
 if (isset($_SESSION['sess_user']))
 {
     $active_user = $_SESSION['sess_user'];
@@ -12,8 +9,8 @@ if (isset($_SESSION['sess_user']))
 }
 
 
-?>
 
+?> 
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -28,7 +25,6 @@ if (isset($_SESSION['sess_user']))
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./shoppingcart.scss">
 	<!-- Demo CSS (No need to include it into your project) -->
-	<link rel="stylesheet" href="css/demo.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
@@ -56,7 +52,7 @@ if (isset($_SESSION['sess_user']))
 }
   </style>
  </head>
- <body onload="ajaxProductsPageCall()"> 
+ <body> 
     <!-- Image and text -->
 <nav>
   <div class="container">
@@ -66,54 +62,141 @@ if (isset($_SESSION['sess_user']))
       
     </ul> <!--end navbar-left -->
 
+    
     <ul class="navbar-right">
-      <li><a href="#" id="cart"><i class="fa fa-shopping-cart"></i> Cart <span class="badge">3</span></a></li>
+    <li><a href="./logout.php" ><i class="fa fa-sign-out"></i> Logout</li>
+    </ul>
+    <ul class="navbar-right">
+      <li><a href="#" id="cart"><i class="fa fa-shopping-cart"></i> Cart <span id="itemscount" class="badge">0</span></a></li>
     </ul> <!--end navbar-right -->
   </div> <!--end container -->
 </nav>
-<!-- start shopping cart conatiner -->
+<div class="container">
+  <div class="row">
+      <!-- start shopping cart conatiner -->
 <div class="container d-flex justify-content-end">
   <div class="shopping-cart" style ="display : none ; z-index : +1000; position: absolute; ">
-    <div class="shopping-cart-header">
-      <i class="fa fa-shopping-cart cart-icon"></i><span class="badge">3</span>
-      <div class="shopping-cart-total">
-        <span class="lighter-text">Total:</span>
-        <span class="main-color-text">$2,229.97</span>
-      </div>
-    </div> <!--end shopping-cart-header -->
+  <div class="cart-container">
+          <h2>Cart</h2>
+          <table>
+            <thead>
+              <tr>
+              <th><strong>Product</strong></th>
+              <th><strong>Price</strong></th>
+            </tr>
+            </thead>
+            <tbody id="carttable">
+            </tbody>
+          </table>
+          <hr>
+          <table id="carttotals">
+            <tr>
+              <td><strong>Items</strong></td>
+              <td><strong>Total</strong></td>
+            </tr>
+            <tr>
+              <td>x <span id="itemsquantity">0</span></td>
+             
+              <td>$<span id="total">0</span></td>
+            </tr></table>
 
-    <ul class="shopping-cart-items">
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/cart-item1.jpg" alt="item1" />
-        <span class="item-name">Sony DSC-RX100M III</span>
-        <span class="item-price">$849.99</span>
-        <span class="item-quantity">Quantity: 01</span>
-      </li>
-
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/cart-item2.jpg" alt="item1" />
-        <span class="item-name">KS Automatic Mechanic...</span>
-        <span class="item-price">$1,249.99</span>
-        <span class="item-quantity">Quantity: 01</span>
-      </li>
-
-      <li class="clearfix">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/cart-item3.jpg" alt="item1" />
-        <span class="item-name">Kindle, 6" Glare-Free To...</span>
-        <span class="item-price">$129.99</span>
-        <span class="item-quantity">Quantity: 01</span>
-      </li>
-    </ul>
-
-    <a href="#" class="button">Checkout</a>
+            
+          <div class="cart-buttons">  
+            <button id="emptycart">Empty Cart</button>
+            <button onclick="ajaxPaymentPageCall()" id="checkout">Checkout</button>
+          </div>
+        </div>
   </div> <!--end shopping-cart -->
-    <main class="ajax-main-content"> 
 
-    </main>
+  </div>
+  <div class="row">
+  <main class="ajax-main-content"> 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Featured <b>Products</b>
+        </h2>
+        <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="0">
+        <h4 id="alerts"></h4>
+          <!-- Carousel indicators -->
+          <!-- Wrapper for carousel items -->
+          <div class="carousel-inner">
+            <div class="item active">
+              <div class="row">
+                <?php 
+                    $sqlquery=mysqli_query($conn,"SELECT * FROM `products` WHERE 1 ");
+                    if(mysqli_num_rows($sqlquery)>0){
+                      while($row=mysqli_fetch_array($sqlquery)) { ?> 
+                  <div class="col-sm-3 mt-5 product">
+                  <div class="thumb-wrapper">
+                    <span class="wish-icon">
+                      <i class="fa fa-heart-o"></i>
+                    </span>
+                    <div class="img-box">
+                      <img src="https://www.91-cdn.com/hub/wp-content/uploads/2021/09/iphone-13-ipad-mini-india-price-image.jpg" class="img-responsive" alt="">
+                    </div>
+                    <div class="thumb-content">
+                    <h4 class="productname"> <?php  echo htmlentities($row['productName']) ?> </h4>
+                      <div class="star-rating">
+                        <ul class="list-inline">
+                          <li class="list-inline-item">
+                            <i class="fa fa-star"></i>
+                          </li>
+                          <li class="list-inline-item">
+                            <i class="fa fa-star"></i>
+                          </li>
+                          <li class="list-inline-item">
+                            <i class="fa fa-star"></i>
+                          </li>
+                          <li class="list-inline-item">
+                            <i class="fa fa-star"></i>
+                          </li>
+                          <li class="list-inline-item">
+                            <i class="fa fa-star-o"></i>
+                          </li>
+                        </ul>
+                      </div>
+                     
+                      <p class="price">
+                        <?php echo "$".$row['price'] ?> 
+                      </p>
+                      <p class="item-price">
+                        <b><?php  echo htmlentities($row['description']) ?> </b>
+                      </p>
+                      
+                      <button class="btn button-primary addtocart">Add To Cart</button>
+                    </div>
+                  </div>
+                </div> <?php }
+          
+        }
+      ?> </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </main>
+
+  </div>
+</div>
+  
+  
+ 
 
 </div>
-<script  src="./js/script.js"></script> 
 <script  src="./script.js"></script> 
+
+<script>
+  $(document).ready(function() {
+    $(".wish-icon i").click(function() {
+      $(this).toggleClass("fa-heart fa-heart-o");
+    });
+  });
+</script>
+
 <script>
 (function(){
  
