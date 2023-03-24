@@ -39,22 +39,32 @@ function addToCart(elem) {
             getproductName = elem.innerText;
        
         }
+        if (elem.className == "productid") {
+            getproductid = elem.innerText;
+       
+        }
+        
         sibs.push(elem);
     }
     //create product object
     var product = {
         productname : getproductName,
-        price : getprice
+        price : getprice,
+        productid : getproductid,
     };
+    
     //convert product data to JSON for storage
     var stringProduct = JSON.stringify(product);
     /*send product data to session storage */
     
     if(!sessionStorage.getItem('cart')){
         //append product JSON object to cart array
+    
+
         cart.push(stringProduct);
         //cart to JSON
         stringCart = JSON.stringify(cart);
+
         //create session storage cart item
         sessionStorage.setItem('cart', stringCart);
         addedToCart(getproductName);
@@ -92,10 +102,12 @@ function updateCartTotal(){
             //convert each JSON product in array back into object
             var x = JSON.parse(cart[i]);
             //get property value of price
-            price = parseFloat(x.price.split('$')[1]);
+            cur=x.price[0];
+            
+            price = parseFloat(x.price.split(/[$₹₤]/)[1]);
             productname = x.productname;
             //add price to total
-            carttable += "<tr class='p-2'><td class='p-2'>" + productname + "</td><td class='p-2'>$" + price.toFixed(2) + "</td></tr>";
+            carttable += "<tr class='p-2'><td class='p-2'>" + productname + "</td><td class='p-2'>"+cur+ price.toFixed(2) + "</td></tr>";
             total += price;
         }
         

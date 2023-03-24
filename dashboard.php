@@ -98,7 +98,20 @@ if (isset($_SESSION['sess_user']))
             <tr>
               <td>x <span id="itemsquantity">0</span></td>
              
-              <td>$<span id="total">0</span></td>
+              <td> <?php //echo "$".$row['price'] 
+                          if($location=='UK')
+                          {
+                            echo "&#8356;";
+                          }
+                          else if($location=='USA')
+                          {
+                            echo "$";
+                          }
+                          else
+                          {
+                            echo "₹";
+                          }
+                        ?> <span id="total">0</span></td>
             </tr></table>            
           <div class="cart-buttons">  
             <button id="emptycart">Empty Cart</button>
@@ -135,6 +148,7 @@ if (isset($_SESSION['sess_user']))
                       <img src="https://www.91-cdn.com/hub/wp-content/uploads/2021/09/iphone-13-ipad-mini-india-price-image.jpg" class="img-responsive" alt="">
                     </div>
                     <div class="thumb-content">
+                    <h4  hidden class="productid"> <?php  echo htmlentities($row['pId']) ?> </h4>
                     <h4 class="productname"> <?php  echo htmlentities($row['productName']) ?> </h4>
                       <div class="star-rating">
                         <ul class="list-inline">
