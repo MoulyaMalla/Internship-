@@ -27,7 +27,10 @@ function addToCart(elem) {
     var getprice;
     var getproductName;
     var cart = [];
-     var stringCart;
+    var stringCart;
+    var productExists = false; // flag to check if product already exists in cart
+    var productIndex = -1; // index of existing product in cart array
+
     //cycles siblings for product info near the add button
     while(elem = elem.previousSibling) {
         if (elem.nodeType === 3) continue; // text node
@@ -43,7 +46,7 @@ function addToCart(elem) {
             getproductid = elem.innerText;
        
         }
-        
+       
         sibs.push(elem);
     }
     //create product object
@@ -51,20 +54,20 @@ function addToCart(elem) {
         productname : getproductName,
         price : getprice,
         productid : getproductid,
+        quantity: 1 // initialize quantity to 1
     };
     
     //convert product data to JSON for storage
     var stringProduct = JSON.stringify(product);
+    
     /*send product data to session storage */
     
     if(!sessionStorage.getItem('cart')){
         //append product JSON object to cart array
     
-
         cart.push(stringProduct);
         //cart to JSON
         stringCart = JSON.stringify(cart);
-
         //create session storage cart item
         sessionStorage.setItem('cart', stringCart);
         addedToCart(getproductName);
@@ -73,8 +76,27 @@ function addToCart(elem) {
     else {
         //get existing cart data from storage and convert back into array
        cart = JSON.parse(sessionStorage.getItem('cart'));
-        //append new product JSON object
-        cart.push(stringProduct);
+         // check if product already exists in cart
+         for (var i = 0; i < cart.length; i++) {
+            var existingProduct = JSON.parse(cart[i]);
+            if (existingProduct.productid === product.productid) {
+                productExists = true;
+                productIndex = i;
+                break;
+            }
+        }
+          // if product exists, update its quantity
+        if (productExists) {
+            var existingProduct = JSON.parse(cart[productIndex]);
+            existingProduct.quantity++;
+            cart[productIndex] = JSON.stringify(existingProduct);
+        }    // otherwise, add the new product to the cart
+        else {
+            cart.push(stringProduct);
+        }
+
+
+       
         //cart back to JSON
         stringCart = JSON.stringify(cart);
         //overwrite cart data in sessionstorage 
@@ -91,24 +113,26 @@ function updateCartTotal(){
     var items = 0;
     var productname = "";
     var carttable = "";
+    var totalcount=0;
     if(sessionStorage.getItem('cart')) {
         //get cart data & parse to array
         var cart = JSON.parse(sessionStorage.getItem('cart'));
         //get no of items in cart 
         items = cart.length;
-      
+        
         //loop over cart array
         for (var i = 0; i < items; i++){
             //convert each JSON product in array back into object
             var x = JSON.parse(cart[i]);
             //get property value of price
             cur=x.price[0];
-            
             price = parseFloat(x.price.split(/[$₹₤]/)[1]);
             productname = x.productname;
+            productquan=x.quantity;
             //add price to total
-            carttable += "<tr class='p-2'><td class='p-2'>" + productname + "</td><td class='p-2'>"+cur+ price.toFixed(2) + "</td></tr>";
-            total += price;
+            carttable += "<tr class='p-2'><td class='p-2'>" + productname + " * "+productquan+"</td><td class='p-2'>"+cur+ price.toFixed(2) + "</td></tr>";
+            total +=productquan * price;
+            totalcount +=productquan;
         }
         
     }
@@ -117,8 +141,8 @@ function updateCartTotal(){
     //insert saved products to cart table
     document.getElementById("carttable").innerHTML = carttable;
     //update items in cart on website HTML
-    document.getElementById("itemsquantity").innerHTML = items;
-    document.getElementById("itemscount").innerHTML = items;
+    document.getElementById("itemsquantity").innerHTML = totalcount;
+    document.getElementById("itemscount").innerHTML = totalcount;
 }
 //user feedback on successful add
 function addedToCart(pname) {
