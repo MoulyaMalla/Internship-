@@ -8,8 +8,6 @@ if (isset($_SESSION['sess_user']))
     $location = $_SESSION['sess_location'];
 }
 
-
-
 ?> 
 <!DOCTYPE html>
 <html lang="en">
@@ -80,12 +78,14 @@ if (isset($_SESSION['sess_user']))
           <h2>Cart</h2>
           <table>
             <thead>
-              <tr>
+              <tr >
               <th><strong>Product</strong></th>
               <th><strong>Price</strong></th>
+              <th><strong>Remove Item</strong></th>
             </tr>
             </thead>
             <tbody id="carttable">
+
             </tbody>
           </table>
           <hr>
@@ -93,14 +93,13 @@ if (isset($_SESSION['sess_user']))
             <tr>
               <td><strong>Items</strong></td>
               <td><strong>Total</strong></td>
+              
             </tr>
             <tr>
               <td>x <span id="itemsquantity">0</span></td>
              
               <td>$<span id="total">0</span></td>
-            </tr></table>
-
-            
+            </tr></table>            
           <div class="cart-buttons">  
             <button id="emptycart">Empty Cart</button>
             <button onclick="ajaxPaymentPageCall()" id="checkout">Checkout</button>
@@ -158,12 +157,25 @@ if (isset($_SESSION['sess_user']))
                       </div>
                      
                       <p class="price">
-                        <?php echo "$".$row['price'] ?> 
+                        <?php //echo "$".$row['price'] 
+                          if($location=='UK')
+                          {
+                            echo "&#8356;".$row['price']*0.0099;
+                          }
+                          else if($location=='USA')
+                          {
+                            echo "$".$row['price']*0.012;
+                          }
+                          else
+                          {
+                            echo "₹".$row['price'];
+                          }
+                        ?> 
+
                       </p>
                       <p class="item-price">
                         <b><?php  echo htmlentities($row['description']) ?> </b>
-                      </p>
-                      
+                      </p>                      
                       <button class="btn button-primary addtocart">Add To Cart</button>
                     </div>
                   </div>

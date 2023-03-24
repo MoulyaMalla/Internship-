@@ -16,7 +16,7 @@ if(isset($_POST['login'])){
 		// Login Type Check
 
 			$Login = mysqli_query($conn,"SELECT * FROM `users` WHERE `userName` = '$userName'");
-			if (mysqli_num_rows($Login) == 1) {
+			if (mysqli_num_rows($Login) == 1){
 				$LoginRow = mysqli_fetch_array($Login);
 				// If the password inputs matched the hashed password in the database
 				if ($password==$LoginRow['password']) {
