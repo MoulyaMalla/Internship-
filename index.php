@@ -1,5 +1,9 @@
 <?php 
+
 session_start();
+unset($_SESSION['sess_user']);
+unset($_SESSION['sess_location']);
+session_destroy();
 include('./include/config.php');
 error_reporting(E_ALL);
 $msg = "";
@@ -20,6 +24,7 @@ if(isset($_POST['login'])){
 				$LoginRow = mysqli_fetch_array($Login);
 				// If the password inputs matched the hashed password in the database
 				if ($password==$LoginRow['password']) {
+          session_start();
 					$_SESSION['sess_user'] = $LoginRow['userName'];
           $_SESSION['sess_location'] = $_POST['location'];
 					$msg = "logged successfully";
@@ -88,9 +93,9 @@ if(isset($_POST['login'])){
     <div id="Location">Location </div>
     
     <select name="location" id="Location" >
-      <option selected  value="India">India</option>
-      <option value="USA">USA</option>
-      <option value="UK">UK</option>
+      <option selected  value="india">India</option>
+      <option value="usa">USA</option>
+      <option value="uk">UK</option>
       
     </select>
     </div>

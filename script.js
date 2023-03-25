@@ -7,7 +7,6 @@ function ajaxPaymentPageCall() {
   });
 }
 
-
 ///Cart Code
 /* get cart total from session on load */
 updateCartTotal();

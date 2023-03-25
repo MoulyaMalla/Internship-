@@ -6,9 +6,8 @@ if (isset($_SESSION['sess_user']))
 {
     $active_user = $_SESSION['sess_user'];
     $location = $_SESSION['sess_location'];
-}
+    ?>
 
-?> 
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -99,11 +98,11 @@ if (isset($_SESSION['sess_user']))
               <td>x <span id="itemsquantity">0</span></td>
              
               <td> <?php //echo "$".$row['price'] 
-                          if($location=='UK')
+                          if($location=='uk')
                           {
                             echo "&#8356;";
                           }
-                          else if($location=='USA')
+                          else if($location=='usa')
                           {
                             echo "$";
                           }
@@ -136,7 +135,7 @@ if (isset($_SESSION['sess_user']))
             <div class="item active">
               <div class="row">
                 <?php 
-                    $sqlquery=mysqli_query($conn,"SELECT * FROM `products` WHERE 1 ");
+                    $sqlquery=mysqli_query($conn,"SELECT * FROM `products` WHERE `location` = '$location'");
                     if(mysqli_num_rows($sqlquery)>0){
                       while($row=mysqli_fetch_array($sqlquery)) { ?> 
                   <div class="col-sm-3 mt-5 product">
@@ -172,13 +171,24 @@ if (isset($_SESSION['sess_user']))
                      
                       <p class="price">
                         <?php //echo "$".$row['price'] 
-                          if($location=='UK')
-                          {
-                            echo "&#8356;".$row['price']*0.0099;
+                      
+                          if($location=='uk')
+                          { 
+                            if($row['ukPrice']){
+                            $pri=$row['ukPrice'];
+                            echo "&#8356;".$pri;
+                            }else{
+                              echo "&#8356;".$row['price']*0.0099;
+                            }
                           }
-                          else if($location=='USA')
+                          else if($location=='usa')
                           {
-                            echo "$".$row['price']*0.012;
+                            if($row['usaPrice']){
+                            $pri=$row['usaPrice'];
+                            echo "$".$pri;
+                            }else{
+                              echo "$".$row['price']*0.012;
+                            }
                           }
                           else
                           {
@@ -236,3 +246,9 @@ if (isset($_SESSION['sess_user']))
 
 </body>
 </html>
+<?php 
+}else{
+  header("Location: ./index.php");
+}
+
+?> 
