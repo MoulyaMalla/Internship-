@@ -6,7 +6,9 @@ function ajaxPaymentPageCall() {
     },
   });
 }
-
+function reload(){
+    window.location.href = "http://localhost/internship-/dashboard.php#";
+}
 ///Cart Code
 /* get cart total from session on load */
 updateCartTotal();
